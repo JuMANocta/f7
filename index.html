@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLIP 7 // TRACKER V3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Flip 7 // Protocol V3</h1>
+
+    <div class="controls-wrapper">
+        <div id="setupPanel" class="panel-row">
+            <input type="text" id="newPlayerName" placeholder="Nom du Netrunner..." style="width: 200px;">
+            <button onclick="addPlayer()">Ajouter</button>
+            <button class="start-btn" onclick="startGame()">Démarrer</button>
+        </div>
+
+        <div id="gamePanel" class="panel-row hidden">
+            <div class="round-badge">MANCHE <span id="roundCount">1</span></div>
+            <button class="start-btn" onclick="nextRound()">Manche Suivante >></button>
+            <button class="undo" onclick="undoLastAction()">↩ Annuler</button>
+            <button class="danger" onclick="resetAll()">☠ Reset</button>
+        </div>
+    </div>
+
+    <div id="scoreboard" class="grid">
+        </div>
+
+    <div class="stats-footer" id="statsFooter">
+        </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

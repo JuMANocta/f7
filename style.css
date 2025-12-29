@@ -1,0 +1,167 @@
+:root {
+    --bg: #050505;
+    --panel: #141414;
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff0055;
+    --neon-green: #39ff14;
+    --neon-gold: #ffd700;
+    --text: #e0e0e0;
+    --font-mono: 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+h1 {
+    font-family: var(--font-mono);
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    margin: 10px 0 20px 0;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+}
+
+.controls-wrapper {
+    background: var(--panel);
+    padding: 15px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    border-radius: 4px;
+}
+
+.panel-row {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;
+}
+.hidden { display: none !important; }
+
+input, button {
+    font-family: var(--font-mono); outline: none; transition: 0.2s;
+    background: #0a0a0a; border: 1px solid #333; color: var(--neon-blue); padding: 8px 12px;
+}
+input:focus { border-color: var(--neon-blue); }
+
+button { cursor: pointer; text-transform: uppercase; font-weight: bold; font-size: 0.8rem; }
+button:hover { background: var(--neon-blue); color: #000; }
+
+button.start-btn { border-color: var(--neon-green); color: var(--neon-green); }
+button.start-btn:hover { background: var(--neon-green); color: #000; }
+
+button.danger { border-color: var(--neon-pink); color: var(--neon-pink); }
+button.danger:hover { background: var(--neon-pink); color: #fff; }
+
+button.undo { border-color: #888; color: #888; }
+button.undo:hover { background: #888; color: #000; }
+
+.round-badge {
+    background: #222; color: var(--neon-green); padding: 5px 10px; border-radius: 4px;
+    font-family: var(--font-mono); font-weight: bold; border: 1px solid var(--neon-green);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 1000px;
+}
+@media (min-width: 700px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+.card {
+    background: var(--panel);
+    border-left: 3px solid #333;
+    padding: 15px;
+    position: relative;
+    /* On garde une transition douce pour le hover, mais plus pour le déplacement */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;
+    padding-left: 25px; /* Place pour le badge de rang */
+}
+
+/* --- NOUVEAU : BADGE DE RANG --- */
+.rank-badge {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #555;
+    z-index: 10;
+}
+
+/* Le 1er a un badge doré */
+.card[data-rank="1"] .rank-badge { color: var(--neon-gold); text-shadow: 0 0 5px var(--neon-gold); }
+.card[data-rank="1"] { border-left-color: var(--neon-gold); }
+
+/* Le 2ème a un badge argenté/blanc */
+.card[data-rank="2"] .rank-badge { color: #fff; }
+
+/* Le 3ème a un badge bronze/orange */
+.card[data-rank="3"] .rank-badge { color: #cd7f32; }
+
+
+.player-name { font-size: 1.2rem; font-weight: bold; color: #ccc; }
+.total-score { font-size: 1.8rem; font-weight: bold; color: #fff; }
+
+@keyframes victory-pulse {
+    0% { box-shadow: 0 0 10px var(--neon-gold); }
+    50% { box-shadow: 0 0 30px var(--neon-gold), inset 0 0 20px rgba(255, 215, 0, 0.2); }
+    100% { box-shadow: 0 0 10px var(--neon-gold); }
+}
+
+.card.winner {
+    border: 2px solid var(--neon-gold);
+    animation: victory-pulse 1.5s infinite;
+    background: linear-gradient(145deg, #1a1a00, #000);
+}
+
+.input-group { display: flex; gap: 8px; align-items: center; }
+.input-group input[type="number"] { width: 60px; text-align: center; }
+
+/* ... Le reste (f7-label, stats-footer, delete-btn) reste identique ... */
+.f7-label {
+    display: flex; align-items: center; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.75rem; color: #555; font-weight: bold;
+    border: 1px solid #333; padding: 0 10px; height: 34px; background: #0a0a0a; user-select: none;
+}
+.f7-label:hover { border-color: var(--neon-green); }
+.f7-label input { display: none; }
+.f7-label input:checked + span { color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
+.f7-label input:checked + span::after { content: " (+15)"; font-size: 0.7em; margin-left: 2px; }
+
+.stats-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    border-top: 1px solid #333;
+    padding: 10px 20px;
+    display: flex; justify-content: space-around;
+    font-family: var(--font-mono); font-size: 0.8rem;
+    backdrop-filter: blur(5px);
+    z-index: 100;
+}
+.stat-item { color: #888; }
+.stat-item b { color: var(--neon-blue); }
+
+.delete-btn {
+    position: absolute; top: 0; right: 0; padding: 5px 8px;
+    background: transparent; border: none; color: #444; font-size: 1rem;
+    z-index: 20;
+}
+.delete-btn:hover { color: var(--neon-pink); background: transparent; }
