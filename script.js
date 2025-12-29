@@ -1,11 +1,11 @@
 // --- STATE ---
 let historyStack = [];
 
-let state = JSON.parse(localStorage.getItem('flip7_v3_state')) || {
+let state = JSON.parse(localStorage.getItem('flip7_v3.4_state')) || {
     players: [],
     gameStarted: false,
     round: 1,
-    dealerIndex: 0 // Index du joueur qui distribue
+    dealerIndex: 0
 };
 
 // --- DOM ---
@@ -19,47 +19,63 @@ const inputName = document.getElementById('newPlayerName');
 // --- RENDER ENGINE ---
 function render() {
     scoreboard.innerHTML = '';
-
-    // 1. Panels Logic
+    
+    // 1. Panels Logic (Ajout du bouton Revanche)
     if (state.gameStarted) {
         setupPanel.classList.add('hidden');
+        gamePanel.innerHTML = `
+            <div class="round-badge">MANCHE <span id="roundCount">${state.round}</span></div>
+            <button class="start-btn" onclick="nextRound()">Manche Suivante >></button>
+            <button class="btn-restart" onclick="restartGameKeepRoster()">🏆 Revanche (New Game)</button>
+            <button class="undo" onclick="undoLastAction()">↩</button>
+            <button class="danger" onclick="resetAll()">☠ Reset Total</button>
+        `;
         gamePanel.classList.remove('hidden');
-        roundCountSpan.textContent = state.round;
     } else {
         setupPanel.classList.remove('hidden');
         gamePanel.classList.add('hidden');
     }
 
-    // 2. Ranking Logic (Calcul seulement)
+    // 2. Ranking Logic
     const sortedForRanking = [...state.players].sort((a, b) => b.score - a.score);
 
-    // 3. Render Cards (FIXED ORDER)
+    // 3. Render Cards
     state.players.forEach((player, index) => {
+        // Init wins if undefined (pour compatibilité)
+        if (typeof player.wins === 'undefined') player.wins = 0;
 
         const currentRank = sortedForRanking.findIndex(p => p.id === player.id) + 1;
         const isWinner = player.score >= 200;
-
-        // Dealer Logic : Le dealer tourne selon le round ou l'index
-        // Si le jeu a commencé, on affiche le badge DEALER sur le bon index
+        
+        // Dealer Logic
         const isDealer = state.gameStarted && (index === state.dealerIndex % state.players.length);
-        const dealerBadge = isDealer ? `<div class="dealer-badge">DONNEUR</div>` : '';
+        const dealerBadge = isDealer ? `<div class="dealer-badge">DEALER</div>` : '';
 
+        // Ghost Score
         let ghostScore = '';
-        if (player.lastAdded !== undefined) {
+        if (player.lastAdded !== undefined && player.lastAdded !== 0) {
             const val = player.lastAdded;
             const styleClass = val > 0 ? 'last-added' : 'last-added bust-added';
             const sign = val > 0 ? '+' : '';
             ghostScore = `<span class="${styleClass}">(${sign}${val})</span>`;
+        } else if (player.lastAdded === 0) {
+            ghostScore = `<span class="last-added bust-added">(CRASH)</span>`;
         }
 
-        const deleteBtn = !state.gameStarted ?
+        const deleteBtn = !state.gameStarted ? 
             `<button class="delete-btn" onclick="removePlayer(${player.id})">×</button>` : '';
+
+        // Trophées (N'affiche rien si 0 victoires)
+        const trophyDisplay = player.wins > 0 ? `🏆 ${player.wins}` : '';
 
         const cardHTML = `
             <div class="card ${isWinner ? 'winner' : ''}" data-rank="${currentRank}">
                 ${dealerBadge}
                 ${deleteBtn}
+                
                 <div class="rank-badge">#${currentRank}</div>
+                <div class="win-badge">${trophyDisplay}</div>
+
                 <div class="card-header">
                     <span class="player-name">${player.name}</span>
                     <span class="total-score">
@@ -70,14 +86,11 @@ function render() {
                 
                 <div class="input-group">
                     <input type="number" id="input-${player.id}" placeholder="Pts" onkeypress="handleEnter(event, ${player.id})">
-                    
-                    <button class="btn-crash" onclick="updateScore(${player.id}, 0, true)" title="Crash (0 pts)">☠️</button>
-                    
+                    <button class="btn-crash" onclick="updateScore(${player.id}, 0, true)" title="Crash">☠</button>
                     <label class="f7-label" title="Flip 7 (+15 Pts)">
                         <input type="checkbox" id="check-${player.id}">
-                        <span>⚡F7(+15)</span>
+                        <span>⚡F7</span>
                     </label>
-
                     <button class="btn-add" onclick="updateScore(${player.id})">+</button>
                 </div>
             </div>
@@ -86,7 +99,7 @@ function render() {
     });
 
     updateStats();
-    localStorage.setItem('flip7_v3_state', JSON.stringify(state));
+    localStorage.setItem('flip7_v3.4_state', JSON.stringify(state));
 }
 
 function updateStats() {
@@ -102,8 +115,8 @@ function updateStats() {
 
     statsFooter.innerHTML = `
         <span class="stat-item">Total: <b>${totalPoints}</b></span>
-        <span class="stat-item">Moyenne: <b>${avgScore}</b></span>
-        <span class="stat-item">Écart Leader: <b>${gap}</b></span>
+        <span class="stat-item">Moy: <b>${avgScore}</b></span>
+        <span class="stat-item">Gap: <b>${gap}</b></span>
         <span class="stat-item">Manche: <b>${state.round}</b></span>
     `;
 }
@@ -112,15 +125,13 @@ function updateStats() {
 
 function saveStateToHistory() {
     historyStack.push(JSON.stringify(state));
-    if (historyStack.length > 5) historyStack.shift();
+    if(historyStack.length > 5) historyStack.shift(); 
 }
 
 function undoLastAction() {
-    if (historyStack.length > 0) {
+    if(historyStack.length > 0) {
         state = JSON.parse(historyStack.pop());
         render();
-    } else {
-        alert("Impossible d'annuler plus loin.");
     }
 }
 
@@ -128,15 +139,41 @@ function startGame() {
     if (state.players.length < 1) return alert("Besoin de joueurs !");
     saveStateToHistory();
     state.gameStarted = true;
-    state.dealerIndex = 0; // Le 1er joueur commence dealer
+    state.dealerIndex = 0;
+    render();
+}
+
+// --- NOUVELLE FONCTION : REVANCHE ---
+function restartGameKeepRoster() {
+    if(!confirm("Démarrer une nouvelle partie ? (Les scores actuels seront effacés, les victoires comptabilisées)")) return;
+    
+    saveStateToHistory();
+
+    // 1. Identifier le(s) vainqueur(s) : Score >= 200 et Score Max
+    // On peut avoir plusieurs vainqueurs si égalité au dessus de 200
+    const currentMaxScore = Math.max(...state.players.map(p => p.score));
+    
+    state.players.forEach(p => {
+        // Condition de victoire : Avoir atteint 200 ET avoir le meilleur score
+        if (p.score >= 200 && p.score === currentMaxScore) {
+            p.wins = (p.wins || 0) + 1;
+        }
+        
+        // Reset des scores
+        p.score = 0;
+        p.lastAdded = undefined;
+    });
+
+    // Reset du jeu
+    state.round = 1;
+    state.dealerIndex = (state.dealerIndex + 1) % state.players.length; // On change quand même de dealer
+    
     render();
 }
 
 function nextRound() {
     saveStateToHistory();
     state.round++;
-
-    // Rotation du Dealer
     state.dealerIndex = (state.dealerIndex + 1) % state.players.length;
     render();
 }
@@ -144,10 +181,9 @@ function nextRound() {
 function addPlayer() {
     const name = inputName.value.trim();
     if (!name) return;
-    if (state.players.length >= 12) return alert("Table pleine.");
     saveStateToHistory();
-    // On ajoute lastAdded: undefined par défaut
-    state.players.push({ id: Date.now(), name: name, score: 0, lastAdded: undefined });
+    // Init avec 0 victoires
+    state.players.push({ id: Date.now(), name: name, score: 0, wins: 0, lastAdded: undefined });
     inputName.value = '';
     render();
 }
@@ -158,39 +194,30 @@ function removePlayer(id) {
     render();
 }
 
-// forceValue permet de passer 0 directement (bouton Crash)
 function updateScore(id, forceValue = null, isCrash = false) {
     const input = document.getElementById(`input-${id}`);
     const checkbox = document.getElementById(`check-${id}`);
-
     let val = 0;
-
-    if (isCrash) {
-        val = 0;
-    } else {
+    
+    if (isCrash) val = 0;
+    else {
         val = parseInt(input.value);
         if (isNaN(val)) val = 0;
-        // Si input vide et pas crash et pas checkbox, on sort
         if (val === 0 && !checkbox.checked && input.value === '') return;
     }
 
     saveStateToHistory();
-
     const player = state.players.find(p => p.id === id);
-
     let scoreToAdd = val;
-    if (checkbox && checkbox.checked && !isCrash) {
-        scoreToAdd += 15;
-    }
+    if (checkbox && checkbox.checked && !isCrash) scoreToAdd += 15;
 
     player.score += scoreToAdd;
-    player.lastAdded = scoreToAdd; // On stocke pour l'affichage "Ghost"
-
+    player.lastAdded = scoreToAdd;
     render();
 }
 
 function resetAll() {
-    if (confirm('CONFIRMER LE RESET TOTAL ?')) {
+    if(confirm('ATTENTION : Ceci effacera TOUT (Joueurs, Scores, Victoires).')) {
         saveStateToHistory();
         state = { players: [], gameStarted: false, round: 1, dealerIndex: 0 };
         render();
