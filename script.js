@@ -1,7 +1,7 @@
 // --- STATE ---
 let historyStack = [];
 
-let state = JSON.parse(localStorage.getItem('flip7_v3.4_state')) || {
+let state = JSON.parse(localStorage.getItem('flip7_V3.5_state')) || {
     players: [],
     gameStarted: false,
     round: 1,
@@ -26,9 +26,9 @@ function render() {
         gamePanel.innerHTML = `
             <div class="round-badge">MANCHE <span id="roundCount">${state.round}</span></div>
             <button class="start-btn" onclick="nextRound()">Manche Suivante >></button>
-            <button class="btn-restart" onclick="restartGameKeepRoster()">🏆 Revanche (New Game)</button>
-            <button class="undo" onclick="undoLastAction()">↩</button>
-            <button class="danger" onclick="resetAll()">☠ Reset Total</button>
+            <button class="btn-restart" onclick="restartGameKeepRoster()">🏆 Revanche</button>
+            <button class="undo" onclick="undoLastAction()">◀️</button>
+            <button class="danger" onclick="resetAll()">☠️ Reset Total</button>
         `;
         gamePanel.classList.remove('hidden');
     } else {
@@ -63,7 +63,7 @@ function render() {
         }
 
         const deleteBtn = !state.gameStarted ? 
-            `<button class="delete-btn" onclick="removePlayer(${player.id})">×</button>` : '';
+            `<button class="delete-btn" onclick="removePlayer(${player.id})">x</button>` : '';
 
         // Trophées (N'affiche rien si 0 victoires)
         const trophyDisplay = player.wins > 0 ? `🏆 ${player.wins}` : '';
@@ -86,7 +86,7 @@ function render() {
                 
                 <div class="input-group">
                     <input type="number" id="input-${player.id}" placeholder="Pts" onkeypress="handleEnter(event, ${player.id})">
-                    <button class="btn-crash" onclick="updateScore(${player.id}, 0, true)" title="Crash">☠</button>
+                    <button class="btn-crash" onclick="updateScore(${player.id}, 0, true)" title="Crash">☠️</button>
                     <label class="f7-label" title="Flip 7 (+15 Pts)">
                         <input type="checkbox" id="check-${player.id}">
                         <span>⚡F7</span>
@@ -99,7 +99,7 @@ function render() {
     });
 
     updateStats();
-    localStorage.setItem('flip7_v3.4_state', JSON.stringify(state));
+    localStorage.setItem('flip7_V3.5_state', JSON.stringify(state));
 }
 
 function updateStats() {
@@ -231,5 +231,29 @@ function handleEnter(e, id) {
 inputName.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') addPlayer();
 });
+
+/* --- FULLSCREEN MANAGER --- */
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        // --- ENTRER EN PLEIN ÉCRAN ---
+        // On essaie toutes les méthodes (Chrome, Safari, Firefox, IE)
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+            document.documentElement.msRequestFullscreen();
+        }
+    } else {
+        // --- QUITTER LE PLEIN ÉCRAN ---
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { 
+            document.webkitExitFullscreen();
+        }
+    }
+}
 
 render();
