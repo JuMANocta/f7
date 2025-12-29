@@ -1,7 +1,7 @@
 // --- STATE ---
 let historyStack = [];
 
-let state = JSON.parse(localStorage.getItem('flip7_v4_state')) || {
+let state = JSON.parse(localStorage.getItem('flip7_v3_state')) || {
     players: [],
     gameStarted: false,
     round: 1,
@@ -19,7 +19,7 @@ const inputName = document.getElementById('newPlayerName');
 // --- RENDER ENGINE ---
 function render() {
     scoreboard.innerHTML = '';
-    
+
     // 1. Panels Logic
     if (state.gameStarted) {
         setupPanel.classList.add('hidden');
@@ -35,14 +35,14 @@ function render() {
 
     // 3. Render Cards (FIXED ORDER)
     state.players.forEach((player, index) => {
-        
+
         const currentRank = sortedForRanking.findIndex(p => p.id === player.id) + 1;
         const isWinner = player.score >= 200;
-        
+
         // Dealer Logic : Le dealer tourne selon le round ou l'index
         // Si le jeu a commencé, on affiche le badge DEALER sur le bon index
         const isDealer = state.gameStarted && (index === state.dealerIndex % state.players.length);
-        const dealerBadge = isDealer ? `<div class="dealer-badge">DEALER</div>` : '';
+        const dealerBadge = isDealer ? `<div class="dealer-badge">DONNEUR</div>` : '';
 
         let ghostScore = '';
         if (player.lastAdded !== undefined) {
@@ -52,7 +52,7 @@ function render() {
             ghostScore = `<span class="${styleClass}">(${sign}${val})</span>`;
         }
 
-        const deleteBtn = !state.gameStarted ? 
+        const deleteBtn = !state.gameStarted ?
             `<button class="delete-btn" onclick="removePlayer(${player.id})">×</button>` : '';
 
         const cardHTML = `
@@ -67,16 +67,18 @@ function render() {
                         ${ghostScore}
                     </span>
                 </div>
+                
                 <div class="input-group">
                     <input type="number" id="input-${player.id}" placeholder="Pts" onkeypress="handleEnter(event, ${player.id})">
                     
+                    <button class="btn-crash" onclick="updateScore(${player.id}, 0, true)" title="Crash (0 pts)">☠️</button>
+                    
                     <label class="f7-label" title="Flip 7 (+15 Pts)">
                         <input type="checkbox" id="check-${player.id}">
-                        <span>⚡F7</span>
+                        <span>⚡F7(+15)</span>
                     </label>
 
-                    <button onclick="updateScore(${player.id})">OK</button>
-                    <button class="btn-crash" onclick="updateScore(${player.id}, 0, true)" title="Crash (0 pts)">☠</button>
+                    <button class="btn-add" onclick="updateScore(${player.id})">+</button>
                 </div>
             </div>
         `;
@@ -84,7 +86,7 @@ function render() {
     });
 
     updateStats();
-    localStorage.setItem('flip7_v4_state', JSON.stringify(state));
+    localStorage.setItem('flip7_v3_state', JSON.stringify(state));
 }
 
 function updateStats() {
@@ -110,11 +112,11 @@ function updateStats() {
 
 function saveStateToHistory() {
     historyStack.push(JSON.stringify(state));
-    if(historyStack.length > 5) historyStack.shift(); 
+    if (historyStack.length > 5) historyStack.shift();
 }
 
 function undoLastAction() {
-    if(historyStack.length > 0) {
+    if (historyStack.length > 0) {
         state = JSON.parse(historyStack.pop());
         render();
     } else {
@@ -133,7 +135,7 @@ function startGame() {
 function nextRound() {
     saveStateToHistory();
     state.round++;
-    
+
     // Rotation du Dealer
     state.dealerIndex = (state.dealerIndex + 1) % state.players.length;
     render();
@@ -160,9 +162,9 @@ function removePlayer(id) {
 function updateScore(id, forceValue = null, isCrash = false) {
     const input = document.getElementById(`input-${id}`);
     const checkbox = document.getElementById(`check-${id}`);
-    
+
     let val = 0;
-    
+
     if (isCrash) {
         val = 0;
     } else {
@@ -173,12 +175,12 @@ function updateScore(id, forceValue = null, isCrash = false) {
     }
 
     saveStateToHistory();
-    
+
     const player = state.players.find(p => p.id === id);
-    
+
     let scoreToAdd = val;
     if (checkbox && checkbox.checked && !isCrash) {
-        scoreToAdd += 15; 
+        scoreToAdd += 15;
     }
 
     player.score += scoreToAdd;
@@ -188,7 +190,7 @@ function updateScore(id, forceValue = null, isCrash = false) {
 }
 
 function resetAll() {
-    if(confirm('CONFIRMER LE RESET TOTAL ?')) {
+    if (confirm('CONFIRMER LE RESET TOTAL ?')) {
         saveStateToHistory();
         state = { players: [], gameStarted: false, round: 1, dealerIndex: 0 };
         render();

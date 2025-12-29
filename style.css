@@ -31,6 +31,7 @@ h1 {
     font-size: 1.5rem;
 }
 
+/* --- CONTROLS PANEL --- */
 .controls-wrapper {
     background: var(--panel);
     padding: 15px;
@@ -47,6 +48,7 @@ h1 {
 }
 .hidden { display: none !important; }
 
+/* --- INPUTS & BUTTONS GENERIQUES --- */
 input, button {
     font-family: var(--font-mono); outline: none; transition: 0.2s;
     background: #0a0a0a; border: 1px solid #333; color: var(--neon-blue); padding: 8px 12px;
@@ -70,6 +72,7 @@ button.undo:hover { background: #888; color: #000; }
     font-family: var(--font-mono); font-weight: bold; border: 1px solid var(--neon-green);
 }
 
+/* --- GRID SYSTEM --- */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -79,46 +82,80 @@ button.undo:hover { background: #888; color: #000; }
 }
 @media (min-width: 700px) { .grid { grid-template-columns: 1fr 1fr; } }
 
+/* --- CARDS --- */
 .card {
     background: var(--panel);
     border-left: 3px solid #333;
     padding: 15px;
     position: relative;
-    /* On garde une transition douce pour le hover, mais plus pour le déplacement */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 8px;
-    padding-left: 25px; /* Place pour le badge de rang */
+    padding-left: 25px; /* Place pour le rank badge */
 }
 
-/* --- NOUVEAU : BADGE DE RANG --- */
+/* --- BADGE DE RANG --- */
 .rank-badge {
     position: absolute;
-    top: 15px;
-    left: 10px;
-    font-family: var(--font-mono);
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #555;
+    top: 10px; left: 10px;
+    font-family: var(--font-mono); font-weight: bold; font-size: 1.1rem; color: #555;
     z-index: 10;
 }
-
-/* Le 1er a un badge doré */
 .card[data-rank="1"] .rank-badge { color: var(--neon-gold); text-shadow: 0 0 5px var(--neon-gold); }
 .card[data-rank="1"] { border-left-color: var(--neon-gold); }
-
-/* Le 2ème a un badge argenté/blanc */
 .card[data-rank="2"] .rank-badge { color: #fff; }
-
-/* Le 3ème a un badge bronze/orange */
 .card[data-rank="3"] .rank-badge { color: #cd7f32; }
 
+/* --- SCORES & TEXT --- */
+.player-name {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--neon-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
 
-.player-name { font-size: 1.2rem; font-weight: bold; color: #ccc; }
+.card:hover .player-name {
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+.card.winner .player-name {
+    color: var(--neon-gold);
+    text-shadow: 0 0 10px var(--neon-gold);
+}
 .total-score { font-size: 1.8rem; font-weight: bold; color: #fff; }
+
+.last-added {
+    font-size: 1rem; color: var(--neon-green); margin-left: 10px; opacity: 0.8; font-weight: normal;
+}
+.bust-added { color: var(--neon-pink); }
+
+/* --- DEALER BADGE --- */
+.dealer-badge {
+    position: absolute; top: -10px; right: 20px;
+    background: var(--neon-blue); color: #000; font-weight: bold; padding: 2px 8px;
+    border-radius: 4px; font-size: 0.8rem; box-shadow: 0 0 10px var(--neon-blue);
+    z-index: 15; animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
 
 @keyframes victory-pulse {
     0% { box-shadow: 0 0 10px var(--neon-gold); }
@@ -132,20 +169,72 @@ button.undo:hover { background: #888; color: #000; }
     background: linear-gradient(145deg, #1a1a00, #000);
 }
 
-.input-group { display: flex; gap: 8px; align-items: center; }
-.input-group input[type="number"] { width: 60px; text-align: center; }
+.input-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+    height: 38px; /* HAUTEUR FORCÉE */
+}
 
-/* ... Le reste (f7-label, stats-footer, delete-btn) reste identique ... */
+/* 1. L'INPUT (s'étire) */
+.input-group input[type="number"] {
+    flex-grow: 1;
+    width: auto;
+    height: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 1.1rem;
+    padding: 0;
+    border-radius: 4px;
+}
+
+/* 2. BOUTON CRASH (Carré) */
+.btn-crash {
+    height: 100%;
+    width: 38px;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    border: 1px solid #444; color: #666;
+    margin: 0; border-radius: 4px; box-sizing: border-box;
+}
+.btn-crash:hover {
+    border-color: var(--neon-pink); color: var(--neon-pink);
+    background: rgba(255, 0, 85, 0.1); box-shadow: 0 0 8px var(--neon-pink);
+}
+
+/* 3. F7 LABEL (Rectangulaire) */
 .f7-label {
-    display: flex; align-items: center; cursor: pointer;
-    font-family: var(--font-mono); font-size: 0.75rem; color: #555; font-weight: bold;
-    border: 1px solid #333; padding: 0 10px; height: 34px; background: #0a0a0a; user-select: none;
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.8rem;
+    color: #555; font-weight: bold;
+    border: 1px solid #333; padding: 0 10px;
+    background: #0a0a0a; user-select: none;
+    box-sizing: border-box; border-radius: 4px; white-space: nowrap;
 }
 .f7-label:hover { border-color: var(--neon-green); }
 .f7-label input { display: none; }
 .f7-label input:checked + span { color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
-.f7-label input:checked + span::after { content: " (+15)"; font-size: 0.7em; margin-left: 2px; }
 
+/* 4. BOUTON ADD (Carré large) */
+.btn-add {
+    height: 100%;
+    width: 45px;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    background: rgba(0, 243, 255, 0.1);
+    margin: 0; border-radius: 4px; box-sizing: border-box;
+    border: 1px solid var(--neon-blue); color: var(--neon-blue);
+}
+.btn-add:hover {
+    background: var(--neon-blue); color: #000;
+}
+
+/* --- FOOTER & MISC --- */
 .stats-footer {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: rgba(10, 10, 10, 0.95);
@@ -161,52 +250,6 @@ button.undo:hover { background: #888; color: #000; }
 
 .delete-btn {
     position: absolute; top: 0; right: 0; padding: 5px 8px;
-    background: transparent; border: none; color: #444; font-size: 1rem;
-    z-index: 20;
+    background: transparent; border: none; color: #444; font-size: 1rem; z-index: 20;
 }
 .delete-btn:hover { color: var(--neon-pink); background: transparent; }
-
-.dealer-badge {
-    position: absolute;
-    top: -10px;
-    right: 20px;
-    background: var(--neon-blue);
-    color: #000;
-    font-weight: bold;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    box-shadow: 0 0 10px var(--neon-blue);
-    z-index: 15;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-}
-
-.last-added {
-    font-size: 1rem;
-    color: var(--neon-green);
-    margin-left: 10px;
-    opacity: 0.8;
-    font-weight: normal;
-}
-
-.bust-added {
-    color: var(--neon-pink); /* Rouge pour les 0 points */
-}
-
-/* NOUVEAU BOUTON CRASH */
-.btn-crash {
-    border-color: #444;
-    color: #555;
-    padding: 8px 10px;
-    margin-left: 5px;
-}
-.btn-crash:hover {
-    border-color: var(--neon-pink);
-    color: var(--neon-pink);
-    background: rgba(255, 0, 85, 0.1);
-}
