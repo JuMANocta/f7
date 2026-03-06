@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>F7 // V3.5</title>
+    <title>F7 // V4.0</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Flip 7 Tracker">
@@ -11,8 +11,10 @@
 </head>
 <body>
 
-    <h1>F7 // V3.5</h1>
+    <h1>F7 // V4.0</h1>
+    <button id="btn-settings" class="btn-fs btn-settings-icon" onclick="openSettings()" title="Paramètres">⚙</button>
     <button id="btn-fullscreen" class="btn-fs" onclick="toggleFullScreen()" title="Mode Immersion">⛶</button>
+
     <div class="controls-wrapper">
         <div id="setupPanel" class="panel-row">
             <input type="text" id="newPlayerName" placeholder="Nom du Netrunner..." style="width: 200px;">
@@ -28,11 +30,45 @@
         </div>
     </div>
 
-    <div id="scoreboard" class="grid">
-        </div>
+    <div id="scoreboard" class="grid"></div>
 
-    <div class="stats-footer" id="statsFooter">
+    <div class="stats-footer" id="statsFooter"></div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal-overlay hidden" onclick="handleOverlayClick(event)">
+        <div class="modal">
+            <h2>⚙ Paramètres</h2>
+
+            <div class="setting-row">
+                <label for="settingWinThreshold">🏆 Score cible (victoire)</label>
+                <div class="setting-control">
+                    <input type="range" id="settingWinThreshold" min="50" max="500" step="10"
+                        oninput="syncSetting('winThreshold', this.value)">
+                    <span id="settingWinThresholdVal" class="setting-val">200</span>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <label for="settingF7Bonus">⚡ Bonus Flip 7</label>
+                <div class="setting-control">
+                    <input type="range" id="settingF7Bonus" min="5" max="50" step="5"
+                        oninput="syncSetting('f7Bonus', this.value)">
+                    <span id="settingF7BonusVal" class="setting-val">15</span>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <label for="settingCols">📐 Colonnes (mobile)</label>
+                <div class="setting-control">
+                    <input type="range" id="settingCols" min="1" max="3" step="1"
+                        oninput="syncSetting('cols', this.value)">
+                    <span id="settingColsVal" class="setting-val">2</span>
+                </div>
+            </div>
+
+            <button class="start-btn" style="margin-top:15px; width:100%;" onclick="closeSettings()">Fermer</button>
         </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
