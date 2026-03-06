@@ -212,18 +212,18 @@ function startGame() {
     render();
 }
 
-// --- NOUVELLE FONCTION : REVANCHE ---
+// --- REVANCHE ---
 function restartGameKeepRoster() {
     if (!confirm("Démarrer une nouvelle partie ? (Les scores actuels seront effacés, les victoires comptabilisées)")) return;
 
     saveStateToHistory();
 
-    // 1. Identifier le(s) vainqueur(s) : Score >= 200 et Score Max
-    // On peut avoir plusieurs vainqueurs si égalité au dessus de 200
+    // 1. Identifier le(s) vainqueur(s) : Score >= winThreshold et Score Max
+    // On peut avoir plusieurs vainqueurs si égalité au dessus du seuil
     const currentMaxScore = Math.max(...state.players.map(p => p.score));
 
     state.players.forEach(p => {
-        // Condition de victoire : Avoir atteint 200 ET avoir le meilleur score
+        // Condition de victoire : Avoir atteint le seuil ET avoir le meilleur score
         if (p.score >= settings.winThreshold && p.score === currentMaxScore) {
             p.wins = (p.wins || 0) + 1;
         }

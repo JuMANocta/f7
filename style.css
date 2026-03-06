@@ -299,7 +299,7 @@ button.undo:hover { background: #888; color: #000; }
 }
 .delete-btn:hover { color: var(--neon-pink); background: transparent; }
 
-/* NOUVEAU : BADGE DE VICTOIRES (Sous le rang) */
+/* BADGE DE VICTOIRES (Sous le rang) */
 .win-badge {
     position: absolute;
     top: 40px; /* Juste en dessous du Rank #1 */
@@ -314,7 +314,7 @@ button.undo:hover { background: #888; color: #000; }
     opacity: 0.8;
 }
 
-/* NOUVEAU : BOUTON REVANCHE (Style Gold) */
+/* BOUTON REVANCHE (Style Gold) */
 .btn-restart {
     border-color: var(--neon-gold);
     color: var(--neon-gold);
