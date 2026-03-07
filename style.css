@@ -1,3 +1,5 @@
+*, *::before, *::after { box-sizing: border-box; }
+
 :root {
     --bg: #050505;
     --panel: #141414;
@@ -20,6 +22,8 @@ body {
     align-items: center;
     min-height: 100vh;
     padding-bottom: 80px;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 h1 {
@@ -80,7 +84,7 @@ button.undo:hover { background: #888; color: #000; }
 /* --- GRID SYSTEM --- */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
     gap: 15px;
     width: 100%;
     max-width: 1000px;
