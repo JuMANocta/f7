@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>F7 // V4.3</title>
+    <title>F7 // V4.4</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Flip 7 Tracker">
@@ -11,9 +11,8 @@
 </head>
 <body>
 
-    <h1>F7 // V4.3</h1>
-    <button id="btn-settings" class="btn-fs btn-settings-icon" onclick="openSettings()" title="Paramètres">⚙</button>
-    <button id="btn-fullscreen" class="btn-fs" onclick="toggleFullScreen()" title="Mode Immersion">⛶</button>
+    <h1>F7 // V4.4</h1>
+    <button id="btn-settings" class="btn-fs" onclick="openSettings()" title="Paramètres">⚙</button>
 
     <div class="controls-wrapper">
         <div id="setupPanel" class="panel-row">
@@ -58,7 +57,7 @@
             </div>
 
             <div class="setting-row">
-                <label for="settingCols">📐 Colonnes (mobile)</label>
+                <label for="settingCols">📐 Colonnes <span style="color:#555;font-size:0.75em">(3 col = tablette+)</span></label>
                 <div class="setting-control">
                     <input type="range" id="settingCols" min="1" max="3" step="1"
                         oninput="syncSetting('cols', this.value)">
