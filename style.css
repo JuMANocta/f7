@@ -65,6 +65,9 @@ button.start-btn:hover { background: var(--neon-green); color: #000; }
 button.danger { border-color: var(--neon-pink); color: var(--neon-pink); }
 button.danger:hover { background: var(--neon-pink); color: #fff; }
 
+button.btn-danger-outline { border-color: #ff6600; color: #ff6600; }
+button.btn-danger-outline:hover { background: #ff6600; color: #000; }
+
 button.undo { border-color: #888; color: #888; }
 button.undo:hover { background: #888; color: #000; }
 

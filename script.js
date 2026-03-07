@@ -34,6 +34,14 @@ function handleOverlayClick(e) {
     if (e.target === e.currentTarget) closeSettings();
 }
 
+async function clearCache() {
+    if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+    }
+    location.reload();
+}
+
 function syncSetting(key, value) {
     settings[key] = parseInt(value);
     document.getElementById('setting' + key.charAt(0).toUpperCase() + key.slice(1) + 'Val').textContent = value;
