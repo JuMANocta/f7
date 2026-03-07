@@ -116,7 +116,7 @@ function render() {
 
         // Progress bar
         const pct = Math.min(100, Math.round((player.score / settings.winThreshold) * 100));
-        const fillClass = isWinner ? 'progress-fill full-win' : pct >= 75 ? 'progress-fill near-win' : 'progress-fill';
+        const fillClass = isWinner ? 'progress-fill full-win' : 'progress-fill';
 
         // Points to win label
         let ptsLabel = '';
@@ -125,8 +125,7 @@ function render() {
                 ptsLabel = `<div class="pts-to-win won">🎯 OBJECTIF ATTEINT</div>`;
             } else {
                 const needed = settings.winThreshold - player.score;
-                const closeClass = pct >= 75 ? 'close' : '';
-                ptsLabel = `<div class="pts-to-win ${closeClass}">🎯 ${needed} pts pour gagner</div>`;
+                ptsLabel = `<div class="pts-to-win">🎯 ${needed} pts pour gagner</div>`;
             }
         }
 
