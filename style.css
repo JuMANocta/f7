@@ -88,6 +88,7 @@ button.undo:hover { background: #888; color: #000; }
     gap: 15px;
     width: 100%;
     max-width: 1000px;
+    overflow: hidden;
 }
 @media (min-width: 700px) { .grid { grid-template-columns: 1fr 1fr; } }
 .grid.cols-1 { grid-template-columns: 1fr !important; }
@@ -101,6 +102,8 @@ button.undo:hover { background: #888; color: #000; }
     position: relative;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     border-radius: 2px;
+    min-width: 0; /* Fix CSS Grid overflow: empêche les cards de dépasser leur colonne */
+    overflow: hidden;
 }
 
 .card-header {
