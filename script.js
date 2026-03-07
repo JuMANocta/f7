@@ -318,28 +318,4 @@ inputName.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') addPlayer();
 });
 
-/* --- FULLSCREEN MANAGER --- */
-function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        // --- ENTRER EN PLEIN ÉCRAN ---
-        // On essaie toutes les méthodes (Chrome, Safari, Firefox, IE)
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
-            document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
-            document.documentElement.msRequestFullscreen();
-        }
-    } else {
-        // --- QUITTER LE PLEIN ÉCRAN ---
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        }
-    }
-}
-
 render();
