@@ -115,7 +115,8 @@ function render() {
         const trophyDisplay = player.wins > 0 ? `🏆 ${player.wins}` : '';
 
         // Progress bar
-        const pct = Math.min(100, Math.round((player.score / settings.winThreshold) * 100));
+        const threshold = settings.winThreshold > 0 ? settings.winThreshold : 200;
+        const pct = Math.min(100, Math.max(0, Math.round((player.score / threshold) * 100)));
         const fillClass = isWinner ? 'progress-fill full-win' : 'progress-fill';
 
         // Points to win label
