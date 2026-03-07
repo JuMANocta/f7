@@ -117,7 +117,10 @@ function render() {
         // Progress bar
         const threshold = settings.winThreshold > 0 ? settings.winThreshold : 200;
         const pct = Math.min(100, Math.max(0, Math.round((player.score / threshold) * 100)));
-        const fillClass = isWinner ? 'progress-fill full-win' : 'progress-fill';
+        let fillClass = 'progress-fill';
+        if (isWinner)     fillClass += ' full-win';
+        else if (pct >= 75) fillClass += ' zone-red';
+        else if (pct >= 50) fillClass += ' zone-orange';
 
         // Points to win label
         let ptsLabel = '';
@@ -147,7 +150,7 @@ function render() {
                 </div>
 
                 <div class="progress-wrap">
-                    <div class="${fillClass}" style="width:${pct}%"></div>
+                    <div class="${fillClass}" style="width:0" data-pct="${pct}"></div>
                 </div>
                 ${ptsLabel}
 
@@ -164,6 +167,13 @@ function render() {
             </div>
         `;
         scoreboard.innerHTML += cardHTML;
+    });
+
+    // Animate progress bars: set to 0 first, then trigger transition via rAF
+    requestAnimationFrame(() => {
+        document.querySelectorAll('.progress-fill[data-pct]').forEach(el => {
+            el.style.width = el.dataset.pct + '%';
+        });
     });
 
     updateStats();

@@ -156,12 +156,12 @@ button.undo:hover { background: #888; color: #000; }
 /* --- PROGRESS BAR --- */
 .progress-wrap {
     margin: 8px 0 6px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 99px;
     height: 14px;
     overflow: hidden;
-    border: 1px solid #ccc;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
     position: relative;
 }
 
@@ -170,19 +170,35 @@ button.undo:hover { background: #888; color: #000; }
     width: 0;
     border-radius: 99px;
     background: var(--neon-blue);
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 6px var(--neon-blue);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 0 8px var(--neon-blue);
+}
+
+.progress-fill.zone-orange {
+    background: #ffaa00;
+    box-shadow: 0 0 8px #ffaa00;
+}
+
+.progress-fill.zone-red {
+    background: var(--neon-pink);
+    box-shadow: 0 0 10px var(--neon-pink);
+    animation: pulse-danger 0.8s ease-in-out infinite alternate;
 }
 
 .progress-fill.full-win {
     background: var(--neon-green);
-    box-shadow: 0 0 10px var(--neon-green);
+    box-shadow: 0 0 14px var(--neon-green);
     animation: pulse-win 1s ease-in-out infinite alternate;
 }
 
+@keyframes pulse-danger {
+    from { box-shadow: 0 0 6px var(--neon-pink); }
+    to   { box-shadow: 0 0 20px var(--neon-pink); }
+}
+
 @keyframes pulse-win {
-    from { box-shadow: 0 0 6px var(--neon-green); }
-    to   { box-shadow: 0 0 18px var(--neon-green); }
+    from { box-shadow: 0 0 8px var(--neon-green); }
+    to   { box-shadow: 0 0 22px var(--neon-green); }
 }
 
 /* --- POINTS TO WIN --- */
